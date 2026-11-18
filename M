@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CheckPro | Ficha Técnica & Chequeo Preventivo</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --dark: #1e1e1e;
+      --red: #d91e2a;
+      --red-dark: #b31520;
+      --yellow: #fbb03b;
+      --green: #16a34a;
+      --amber: #d97706;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); padding-bottom: 95px; }
+
+    /* Barra superior retail */
+    .topbar {
+      background: var(--dark);
+      color: #fff;
+      padding: 8px 16px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .topbar-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-top {
+      background: #2e2e2e;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-top:hover { background: #3f3f3f; }
+    .api-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; background: #ef4444; }
+    .api-dot.on { background: #22c55e; }
+
+    /* Cabecera principal */
+    .header {
+      background: #fff;
+      padding: 12px 16px;
+      border-bottom: 3px solid var(--red);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .logo-badge {
+      background: var(--red);
+      color: #fff;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 16px;
+      letter-spacing: -0.5px;
+    }
+    .logo-badge span { color: var(--yellow); }
+    .btn-sm {
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      color: #111827;
+    }
+    .btn-sm:hover { background: #e5e7eb; }
+
+    .container { max-width: 760px; margin: 16px auto; padding: 0 12px; }
+    .card {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin: 0 0 12px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      color: #111827;
+    }
+
+    /* Buscador Patente CL */
+    .plate-search-box {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+      margin-bottom: 10px;
+    }
+    .plate-input-wrap {
+      display: flex;
+      align-items: center;
+      border: 2px solid #111827;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      flex: 1;
+      max-width: 240px;
+    }
+    .plate-cl {
+      background: #0039a6;
+      color: #fff;
+      font-weight: 900;
+      font-size: 11px;
+      padding: 0 8px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      letter-spacing: 0.5px;
+    }
+    .plate-input-wrap input {
+      border: none;
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 8px 10px;
+      width: 100%;
+      text-align: center;
+    }
+    .plate-input-wrap input:focus { outline: none; }
+    .btn-search {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-search:hover { background: var(--red-dark); }
+    .btn-search:disabled { opacity: 0.6; cursor: wait; }
+    .search-status { font-size: 12px; margin-bottom: 10px; font-weight: 600; min-height: 16px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 540px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    label { display: block; font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 4px; }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 7px;
+      font-size: 14px;
+      background: #fff;
+      color: #111827;
+    }
+    input:focus, select:focus { outline: none; border-color: var(--red); }
+
+    /* Semáforo */
+    .traffic-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+    .t-btn {
+      padding: 10px 6px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.15s;
+    }
+    .t-btn.active-ok { border-color: var(--green); background: #dcfce7; color: #14532d; }
+    .t-btn.active-warn { border-color: var(--amber); background: #fef3c7; color: #78350f; }
+    .t-btn.active-bad { border-color: var(--red); background: #fee2e2; color: #7f1d1d; }
+
+    /* Selector Visual Ganchos */
+    .hook-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
+    .hook-item {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafafa;
+      transition: 0.15s;
+    }
+    .hook-item.selected { border-color: var(--red); background: #fff1f2; }
+    .hook-item svg { width: 52px; height: 28px; display: block; margin: 0 auto 4px; }
+    .hook-item span { font-size: 11px; font-weight: 700; display: block; color: #111827; }
+
+    .tip-box {
+      background: #f9fafb;
+      border-left: 3px solid var(--yellow);
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 12px;
+      border-radius: 0 6px 6px 0;
+    }
+
+    /* Barra inferior fija */
+    .actions-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 10px 14px;
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      z-index: 30;
+      box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+    }
+    .btn-primary {
+      background: #25d366;
+      color: #fff;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      flex: 1;
+      max-width: 280px;
+    }
+    .btn-primary:hover { background: #1ebe5d; }
+    .btn-secondary {
+      background: var(--dark);
+      color: #fff;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .preview-box {
+      background: #1e1e1e;
+      color: #f3f4f6;
+      padding: 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12.5px;
+      white-space: pre-wrap;
+      line-height: 1.45;
+    }
+
+    /* Modales */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 480px;
+      width: 100%;
+      padding: 18px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .history-item {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra Superior -->
+  <div class="topbar">
+    <span>📍 Chequeo Preventivo en Mostrador · Sin Precios</span>
+    <div class="topbar-actions">
+      <button class="btn-top" onclick="abrirModal('modal-api')">
+        <span class="api-dot" id="api-status-dot"></span>Configurar API
+      </button>
+      <button class="btn-top" onclick="abrirHistorial()">📂 Historial</button>
+    </div>
+  </div>
+
+  <!-- Cabecera -->
+  <div class="header">
+    <div class="brand">
+      <div class="logo-badge">CHECK<span>PRO</span></div>
+      <div>
+        <div style="font-weight:800;font-size:15px;">Ficha Técnica Vehicular</div>
+        <div style="font-size:11px;color:#6b7280;">Diagnóstico Exprés & Medidas Exactas</div>
+      </div>
+    </div>
+    <button class="btn-sm" onclick="limpiarTodo()">Nueva Ficha</button>
+  </div>
+
+  <div class="container">
+    <!-- 1. Buscador por Patente y Datos -->
+    <div class="card">
+      <h2 class="card-title">1. Búsqueda por Patente & Datos del Vehículo</h2>
+
+      <div class="plate-search-box">
+        <div class="plate-input-wrap">
+          <div class="plate-cl"><span>CHILE</span></div>
+          <input type="text" id="patente" maxlength="7" placeholder="ABCD12"
+                 oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g,''); actualizar();"
+                 onkeydown="if(event.key==='Enter') consultarPatente();">
+        </div>
+        <button type="button" class="btn-search" id="btn-buscar-patente" onclick="consultarPatente()">
+          🔍 Consultar Patente
+        </button>
+      </div>
+      <div class="search-status" id="search-status"></div>
+
+      <div class="grid-2">
+        <div>
+          <label>Marca / Modelo / Año</label>
+          <input type="text" id="vehiculo" placeholder="Ej: Peugeot Partner 1.6 HDi 2018" oninput="actualizar()">
+        </div>
+        <div>
+          <label>Motor / VIN (Opcional)</label>
+          <input type="text" id="vin" placeholder="Ej: 1.6 Diésel / VIN..." oninput="actualizar()">
+        </div>
+        <div>
+          <label>Nombre Cliente (Opcional)</label>
+          <input type="text" id="cliente" placeholder="Ej: Juan Pérez" oninput="actualizar()">
+        </div>
+        <div>
+          <label>WhatsApp Cliente (Opcional)</label>
+          <input type="tel" id="telefono" placeholder="Ej: 56912345678" oninput="actualizar()">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Batería -->
+    <div class="card">
+      <h2 class="card-title">2. Batería</h2>
+      <div class="tip-box">Verifica voltaje en reposo/arranque y estado de sulfatación en bornes.</div>
+      <div class="traffic-group" id="st-bateria">
+        <button type="button" class="t-btn active-ok" onclick="setEstado('bateria','🟢 Óptimo',this)">🟢 Óptimo</button>
+        <button type="button" class="t-btn" onclick="setEstado('bateria','🟡 Revisar Pronto',this)">🟡 Revisar</button>
+        <button type="button" class="t-btn" onclick="setEstado('bateria','🔴 Cambio Urgente',this)">🔴 Cambiar</button>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label>Amperaje (Ah) / CCA que utiliza</label>
+          <input type="text" id="bat-amp" placeholder="Ej: 60Ah / 540 CCA" oninput="actualizar()">
+        </div>
+        <div>
+          <label>Polaridad / Tipo de Borne</label>
+          <select id="bat-pol" onchange="actualizar()">
+            <option value="Positivo Derecho (+ Der)">Positivo Derecho (+ Der)</option>
+            <option value="Positivo Izquierdo (+ Izq)">Positivo Izquierdo (+ Izq)</option>
+            <option value="Borne Europeo / Embutido">Borne Europeo / Embutido</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Luces -->
+    <div class="card">
+      <h2 class="card-title">3. Sistema de Luces</h2>
+      <div class="tip-box">Revisa luces bajas, altas, posición, freno, retroceso e intermitentes.</div>
+      <div class="traffic-group" id="st-luces">
+        <button type="button" class="t-btn active-ok" onclick="setEstado('luces','🟢 Óptimo',this)">🟢 Óptimo</button>
+        <button type="button" class="t-btn" onclick="setEstado('luces','🟡 Revisar Pronto',this)">🟡 Revisar</button>
+        <button type="button" class="t-btn" onclick="setEstado('luces','🔴 Cambio Urgente',this)">🔴 Cambiar</button>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label>Tipo de Ampolleta Principal</label>
+          <select id="luz-tipo" onchange="actualizar()">
+            <option value="H4">H4 (Alta y Baja junta)</option>
+            <option value="H7">H7</option>
+            <option value="H1">H1</option>
+            <option value="H11">H11</option>
+            <option value="9005 / HB3">9005 / HB3</option>
+            <option value="9006 / HB4">9006 / HB4</option>
+            <option value="LED / Xenón">LED / Xenón</option>
+          </select>
+        </div>
+        <div>
+          <label>Observación / Luz con falla</label>
+          <input type="text" id="luz-obs" placeholder="Ej: Baja izquierda quemada / P21W freno" oninput="actualizar()">
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Plumillas -->
+    <div class="card">
+      <h2 class="card-title">4. Plumillas Limpiaparabrisas</h2>
+      <div class="tip-box">Goma reseca o barrido rayado reduce visibilidad y daña el parabrisas.</div>
+      <div class="traffic-group" id="st-plumillas">
+        <button type="button" class="t-btn active-ok" onclick="setEstado('plumillas','🟢 Óptimo',this)">🟢 Óptimo</button>
+        <button type="button" class="t-btn" onclick="setEstado('plumillas','🟡 Revisar Pronto',this)">🟡 Revisar</button>
+        <button type="button" class="t-btn" onclick="setEstado('plumillas','🔴 Cambio Urgente',this)">🔴 Cambiar</button>
+      </div>
+      <div class="grid-2" style="margin-bottom:10px;">
+        <div>
+          <label>Medida Delanteras (Piloto / Copiloto)</label>
+          <input type="text" id="plu-del" placeholder='Ej: 24" y 18"' oninput="actualizar()">
+        </div>
+        <div>
+          <label>Medida Plumilla Trasera</label>
+          <input type="text" id="plu-tra" placeholder='Ej: 12" (o No aplica)' oninput="actualizar()">
+        </div>
+      </div>
+      <label>Selecciona el Tipo de Gancho / Conector:</label>
+      <div class="hook-grid" id="hook-selector">
+        <div class="hook-item selected" onclick="setGancho('Gancho U / J', this)">
+          <svg viewBox="0 0 60 30"><path d="M10 10 H42 A6 6 0 0 1 42 22 H28" fill="none" stroke="#111" stroke-width="3.5" stroke-linecap="round"/></svg>
+          <span>Gancho U / J</span>
+        </div>
+        <div class="hook-item" onclick="setGancho('Push Button', this)">
+          <svg viewBox="0 0 60 30"><rect x="12" y="9" width="34" height="12" rx="2" fill="none" stroke="#111" stroke-width="3"/><rect x="26" y="6" width="8" height="5" fill="#d91e2a"/></svg>
+          <span>Push Button</span>
+        </div>
+        <div class="hook-item" onclick="setGancho('Pinch Tab', this)">
+          <svg viewBox="0 0 60 30"><path d="M12 12 H44 L48 18 H12 Z" fill="none" stroke="#111" stroke-width="3"/><circle cx="38" cy="10" r="3" fill="#d91e2a"/></svg>
+          <span>Pinch Tab</span>
+        </div>
+        <div class="hook-item" onclick="setGancho('Bayoneta', this)">
+          <svg viewBox="0 0 60 30"><line x1="10" y1="15" x2="48" y2="15" stroke="#111" stroke-width="4"/><circle cx="40" cy="15" r="2.5" fill="#fff"/></svg>
+          <span>Bayoneta</span>
+        </div>
+        <div class="hook-item" onclick="setGancho('Top Lock', this)">
+          <svg viewBox="0 0 60 30"><rect x="14" y="10" width="32" height="10" fill="none" stroke="#111" stroke-width="3"/><path d="M22 10 V6 H38 V10" fill="none" stroke="#d91e2a" stroke-width="2.5"/></svg>
+          <span>Top Lock</span>
+        </div>
+        <div class="hook-item" onclick="setGancho('Side Pin', this)">
+          <svg viewBox="0 0 60 30"><line x1="12" y1="15" x2="42" y2="15" stroke="#111" stroke-width="3.5"/><line x1="38" y1="7" x2="38" y2="23" stroke="#d91e2a" stroke-width="3.5"/></svg>
+          <span>Side Pin</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Neumáticos -->
+    <div class="card">
+      <h2 class="card-title">5. Neumáticos</h2>
+      <div class="tip-box">Verifica profundidad del dibujo (mínimo legal 1.6 mm) y desgaste parejo.</div>
+      <div class="traffic-group" id="st-neumaticos">
+        <button type="button" class="t-btn active-ok" onclick="setEstado('neumaticos','🟢 Óptimo',this)">🟢 Óptimo</button>
+        <button type="button" class="t-btn" onclick="setEstado('neumaticos','🟡 Revisar Pronto',this)">🟡 Revisar</button>
+        <button type="button" class="t-btn" onclick="setEstado('neumaticos','🔴 Cambio Urgente',this)">🔴 Cambiar</button>
+      </div>
+      <div class="grid-2">
+        <div>
+          <label>Medida que utiliza el vehículo</label>
+          <input type="text" id="neu-med" placeholder="Ej: 195/65 R15" oninput="actualizar()">
+        </div>
+        <div>
+          <label>Estado de desgaste / Eje</label>
+          <input type="text" id="neu-obs" placeholder="Ej: Delanteros al límite / Alineación" oninput="actualizar()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista Previa -->
+    <div class="card">
+      <h2 class="card-title">Vista Previa del Informe Técnico</h2>
+      <div class="preview-box" id="resumen-texto"></div>
+    </div>
+  </div>
+
+  <!-- Barra de Acciones -->
+  <div class="actions-bar">
+    <button class="btn-secondary" onclick="guardarFicha()">💾 Guardar</button>
+    <button class="btn-secondary" onclick="copiarTexto()">📋 Copiar</button>
+    <button class="btn-primary" onclick="enviarWhatsApp()">📲 Enviar WhatsApp</button>
+  </div>
+
+  <!-- Modal Configuración API Real -->
+  <div class="modal-backdrop" id="modal-api">
+    <div class="modal">
+      <div class="modal-header">
+        <strong>⚙️ Conexión API Real de Patentes (Chile)</strong>
+        <button class="btn-sm" onclick="cerrarModal('modal-api')">✕</button>
+      </div>
+      <p style="font-size:12px;color:#4b5563;margin-top:0;">
+        Conecta tu proveedor de consultas vehiculares (ej. GetAPI, Boostr o tu servidor propio). Usa <code>{patente}</code> en la URL donde deba ir la placa consultada.
+      </p>
+      <div style="margin-bottom:10px;">
+        <label>URL del Endpoint</label>
+        <input type="text" id="api-url" placeholder="https://api.tuproveedor.cl/v1/patente/{patente}">
+      </div>
+      <div class="grid-2" style="margin-bottom:10px;">
+        <div>
+          <label>Método Autenticación</label>
+          <select id="api-auth-type">
+            <option value="x-api-key">Header: x-api-key</option>
+            <option value="bearer">Header: Authorization Bearer</option>
+            <option value="query">Parámetro URL (?apikey=...)</option>
+          </select>
+        </div>
+        <div>
+          <label>API Key / Token</label>
+          <input type="password" id="api-key" placeholder="Pega tu llave secreta aquí">
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn-sm" onclick="borrarConfigApi()">Desconectar</button>
+        <button class="btn-search" style="padding:10px 16px;" onclick="guardarConfigApi()">Guardar Conexión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Historial Local -->
+  <div class="modal-backdrop" id="modal-historial">
+    <div class="modal">
+      <div class="modal-header">
+        <strong>📂 Clientes y Fichas Guardadas</strong>
+        <button class="btn-sm" onclick="cerrarModal('modal-historial')">✕</button>
+      </div>
+      <div id="historial-lista"></div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      bateria: '🟢 Óptimo',
+      luces: '🟢 Óptimo',
+      plumillas: '🟢 Óptimo',
+      neumaticos: '🟢 Óptimo',
+      gancho: 'Gancho U / J'
+    };
+
+    // Cargar configuración API al iniciar
+    function cargarEstadoApi() {
+      const cfg = JSON.parse(localStorage.getItem('checkpro_api') || 'null');
+      const dot = document.getElementById('api-status-dot');
+      if (cfg && cfg.url) {
+        dot.classList.add('on');
+        document.getElementById('api-url').value = cfg.url;
+        document.getElementById('api-auth-type').value = cfg.authType || 'x-api-key';
+        document.getElementById('api-key').value = cfg.apiKey || '';
+      } else {
+        dot.classList.remove('on');
+      }
+    }
+
+    function guardarConfigApi() {
+      const url = document.getElementById('api-url').value.trim();
+      const authType = document.getElementById('api-auth-type').value;
+      const apiKey = document.getElementById('api-key').value.trim();
+      if (!url) {
+        alert('Ingresa la URL del endpoint de tu API.');
+        return;
+      }
+      localStorage.setItem('checkpro_api', JSON.stringify({ url, authType, apiKey }));
+      cargarEstadoApi();
+      cerrarModal('modal-api');
+      setStatus('🟢 API externa configurada y lista para consultar patentes.', '#16a34a');
+    }
+
+    function borrarConfigApi() {
+      localStorage.removeItem('checkpro_api');
+      document.getElementById('api-url').value = '';
+      document.getElementById('api-key').value = '';
+      cargarEstadoApi();
+      cerrarModal('modal-api');
+    }
+
+    function setStatus(msg, color = '#374151') {
+      const el = document.getElementById('search-status');
+      el.textContent = msg;
+      el.style.color = color;
+    }
+
+    // Consulta Real por Patente (API Externa + Respaldo Historial Local)
+    async function consultarPatente() {
+      const patente = document.getElementById('patente').value.trim().toUpperCase();
+      if (patente.length < 5) {
+        setStatus('⚠️ Ingresa una patente válida (ej: ABCD12).', '#d97706');
+        return;
+      }
+
+      // 1. Revisar si ya existe en el historial local de la tienda
+      const historial = JSON.parse(localStorage.getItem('checkpro_historial') || '[]');
+      const previo = historial.find(item => item.patente === patente);
+
+      const cfg = JSON.parse(localStorage.getItem('checkpro_api') || 'null');
+
+      if (!cfg || !cfg.url) {
+        if (previo) {
+          cargarDatosEnFormulario(previo);
+          setStatus('✅ Vehículo recuperado desde el historial de clientes de la tienda.', '#16a34a');
+        } else {
+          setStatus('ℹ️ Sin API configurada. Configúrala arriba en "Configurar API" o completa manualmente.', '#4b5563');
+        }
+        return;
+      }
+
+      // 2. Consultar API Real Externa
+      const btn = document.getElementById('btn-buscar-patente');
+      btn.disabled = true;
+      setStatus('⏳ Consultando registro vehicular en tiempo real...', '#111827');
+
+      try {
+        let endpoint = cfg.url.includes('{patente}')
+          ? cfg.url.replace('{patente}', encodeURIComponent(patente))
+          : `${cfg.url}${cfg.url.includes('?') ? '&' : '?'}patente=${encodeURIComponent(patente)}`;
+
+        const headers = { 'Accept': 'application/json' };
+        if (cfg.apiKey) {
+          if (cfg.authType === 'x-api-key') headers['x-api-key'] = cfg.apiKey;
+          else if (cfg.authType === 'bearer') headers['Authorization'] = `Bearer ${cfg.apiKey}`;
+          else if (cfg.authType === 'query') {
+            endpoint += `${endpoint.includes('?') ? '&' : '?'}apikey=${encodeURIComponent(cfg.apiKey)}`;
+          }
+        }
+
+        const res = await fetch(endpoint, { method: 'GET', headers });
+        if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+        const raw = await res.json();
+
+        // Normalización flexible de campos comunes en APIs de patentes chilenas
+        const d = raw.data || raw.vehiculo || raw.result || raw;
+        const marca = d.marca || d.make || d.brand || '';
+        const modelo = d.modelo || d.model || '';
+        const version = d.version || d.submodelo || '';
+        const anio = d.anio || d.ano || d.year || '';
+        const motor = d.motor || d.cilindrada || d.combustible || '';
+        const vin = d.vin || d.chasis || d.numero_chasis || '';
+
+        const textoVehiculo = [marca, modelo, version, anio].filter(Boolean).join(' ').trim();
+        if (textoVehiculo) document.getElementById('vehiculo').value = textoVehiculo;
+        if (motor || vin) document.getElementById('vin').value = [motor, vin].filter(Boolean).join(' · ');
+
+        // Si además tenía historial previo en tienda, recuperar sus medidas técnicas
+        if (previo) {
+          if (previo.batAmp) document.getElementById('bat-amp').value = previo.batAmp;
+          if (previo.luzTipo) document.getElementById('luz-tipo').value = previo.luzTipo;
+          if (previo.pluDel) document.getElementById('plu-del').value = previo.pluDel;
+          if (previo.pluTra) document.getElementById('plu-tra').value = previo.pluTra;
+          if (previo.neuMed) document.getElementById('neu-med').value = previo.neuMed;
+        }
+
+        actualizar();
+        setStatus(`✅ Vehículo encontrado: ${textoVehiculo || patente}`, '#16a34a');
+      } catch (err) {
+        console.error(err);
+        if (previo) {
+          cargarDatosEnFormulario(previo);
+          setStatus('⚠️ Error en API externa, pero se recuperaron datos desde el historial local.', '#d97706');
+        } else {
+          setStatus(`❌ No se pudo consultar la API (${err.message}). Revisa tu URL/API Key o CORS.`, '#d91e2a');
+        }
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    function setEstado(area, valor, btn) {
+      state[area] = valor;
+      const group = document.getElementById('st-' + area);
+      group.querySelectorAll('.t-btn').forEach(b => b.className = 't-btn');
+      if (valor.includes('🟢')) btn.classList.add('active-ok');
+      else if (valor.includes('🟡')) btn.classList.add('active-warn');
+      else btn.classList.add('active-bad');
+      actualizar();
+    }
+
+    function setGancho(nombre, el) {
+      state.gancho = nombre;
+      document.querySelectorAll('.hook-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      actualizar();
+    }
+
+    function generarMensaje() {
+      const pat = (document.getElementById('patente').value || 'Sin patente').toUpperCase();
+      const veh = document.getElementById('vehiculo').value || 'No especificado';
+      const vin = document.getElementById('vin').value;
+      const cli = document.getElementById('cliente').value;
+      const batAmp = document.getElementById('bat-amp').value || 'Por confirmar';
+      const batPol = document.getElementById('bat-pol').value;
+      const luzTipo = document.getElementById('luz-tipo').value;
+      const luzObs = document.getElementById('luz-obs').value;
+      const pluDel = document.getElementById('plu-del').value || 'Por confirmar';
+      const pluTra = document.getElementById('plu-tra').value || 'No aplica';
+      const neuMed = document.getElementById('neu-med').value || 'Por confirmar';
+      const neuObs = document.getElementById('neu-obs').value;
+
+      let txt = `*FICHA TÉCNICA Y CHEQUEO PREVENTIVO*\n`;
+      if (cli) txt += `Cliente: ${cli}\n`;
+      txt += `Vehículo: ${veh} (${pat})\n`;
+      if (vin) txt += `Detalle/VIN: ${vin}\n`;
+      txt += `----------------------------------\n\n`;
+      txt += `*1. BATERÍA:* ${state.bateria}\n`;
+      txt += `• Capacidad: ${batAmp}\n`;
+      txt += `• Polaridad: ${batPol}\n\n`;
+      txt += `*2. LUCES:* ${state.luces}\n`;
+      txt += `• Ampolleta: ${luzTipo}${luzObs ? ' (' + luzObs + ')' : ''}\n\n`;
+      txt += `*3. PLUMILLAS:* ${state.plumillas}\n`;
+      txt += `• Delanteras: ${pluDel}\n`;
+      txt += `• Trasera: ${pluTra}\n`;
+      txt += `• Conector: ${state.gancho}\n\n`;
+      txt += `*4. NEUMÁTICOS:* ${state.neumaticos}\n`;
+      txt += `• Medida: ${neuMed}${neuObs ? ' (' + neuObs + ')' : ''}\n\n`;
+      txt += `----------------------------------\n`;
+      txt += `_Guarda esta ficha con las medidas exactas que utiliza tu vehículo para tus próximas mantenciones._`;
+      return txt;
+    }
+
+    function actualizar() {
+      document.getElementById('resumen-texto').textContent = generarMensaje();
+    }
+
+    function guardarFicha() {
+      const pat = document.getElementById('patente').value.trim().toUpperCase();
+      if (!pat) {
+        alert('Ingresa al menos la patente para guardar la ficha en el historial.');
+        return;
+      }
+      const ficha = {
+        patente: pat,
+        vehiculo: document.getElementById('vehiculo').value,
+        vin: document.getElementById('vin').value,
+        cliente: document.getElementById('cliente').value,
+        telefono: document.getElementById('telefono').value,
+        batAmp: document.getElementById('bat-amp').value,
+        batPol: document.getElementById('bat-pol').value,
+        luzTipo: document.getElementById('luz-tipo').value,
+        luzObs: document.getElementById('luz-obs').value,
+        pluDel: document.getElementById('plu-del').value,
+        pluTra: document.getElementById('plu-tra').value,
+        gancho: state.gancho,
+        neuMed: document.getElementById('neu-med').value,
+        neuObs: document.getElementById('neu-obs').value,
+        fecha: new Date().toLocaleDateString('es-CL')
+      };
+      let historial = JSON.parse(localStorage.getItem('checkpro_historial') || '[]');
+      historial = historial.filter(h => h.patente !== pat);
+      historial.unshift(ficha);
+      localStorage.setItem('checkpro_historial', JSON.stringify(historial.slice(0, 50)));
+      setStatus(`💾 Ficha de ${pat} guardada en historial local.`, '#16a34a');
+    }
+
+    function cargarDatosEnFormulario(f) {
+      document.getElementById('patente').value = f.patente || '';
+      document.getElementById('vehiculo').value = f.vehiculo || '';
+      document.getElementById('vin').value = f.vin || '';
+      document.getElementById('cliente').value = f.cliente || '';
+      document.getElementById('telefono').value = f.telefono || '';
+      document.getElementById('bat-amp').value = f.batAmp || '';
+      if (f.batPol) document.getElementById('bat-pol').value = f.batPol;
+      if (f.luzTipo) document.getElementById('luz-tipo').value = f.luzTipo;
+      document.getElementById('luz-obs').value = f.luzObs || '';
+      document.getElementById('plu-del').value = f.pluDel || '';
+      document.getElementById('plu-tra').value = f.pluTra || '';
+      document.getElementById('neu-med').value = f.neuMed || '';
+      document.getElementById('neu-obs').value = f.neuObs || '';
+      actualizar();
+    }
+
+    function abrirHistorial() {
+      const historial = JSON.parse(localStorage.getItem('checkpro_historial') || '[]');
+      const cont = document.getElementById('historial-lista');
+      if (!historial.length) {
+        cont.innerHTML = '<p style="font-size:13px;color:#6b7280;">Aún no hay fichas guardadas en este navegador.</p>';
+      } else {
+        cont.innerHTML = historial.map((h, idx) => `
+          <div class="history-item">
+            <div>
+              <strong>${h.patente}</strong> · ${h.vehiculo || 'Vehículo'}<br>
+              <small style="color:#6b7280;">${h.cliente || 'Sin nombre'} · ${h.fecha}</small>
+            </div>
+            <button class="btn-sm" onclick="seleccionarHistorial(${idx})">Cargar</button>
+          </div>
+        `).join('');
+      }
+      abrirModal('modal-historial');
+    }
+
+    function seleccionarHistorial(idx) {
+      const historial = JSON.parse(localStorage.getItem('checkpro_historial') || '[]');
+      if (historial[idx]) {
+        cargarDatosEnFormulario(historial[idx]);
+        cerrarModal('modal-historial');
+        setStatus(`✅ Ficha ${historial[idx].patente} cargada.`, '#16a34a');
+      }
+    }
+
+    function copiarTexto() {
+      navigator.clipboard.writeText(generarMensaje());
+      alert('Ficha técnica copiada al portapapeles.');
+    }
+
+    function enviarWhatsApp() {
+      const tel = document.getElementById('telefono').value.replace(/\D/g, '');
+      const msg = encodeURIComponent(generarMensaje());
+      const url = tel ? `https://wa.me/${tel}?text=${msg}` : `https://wa.me/?text=${msg}`;
+      window.open(url, '_blank');
+    }
+
+    function limpiarTodo() {
+      document.querySelectorAll('input').forEach(i => {
+        if (!i.id.startsWith('api-')) i.value = '';
+      });
+      setStatus('');
+      actualizar();
+    }
+
+    function abrirModal(id) { document.getElementById(id).classList.add('open'); }
+    function cerrarModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    cargarEstadoApi();
+    actualizar();
+  </script>
+</body>
+</html>
